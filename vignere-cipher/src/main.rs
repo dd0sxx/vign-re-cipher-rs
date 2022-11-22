@@ -99,7 +99,7 @@ fn decode_vignere(c: String, mut k: String) -> String {
         } else if cipher_char == '\n'{
             return result
         } else {
-            let new_char_index = (char_to_pos(cipher_char) + char_to_pos(k.chars().nth(key_iteration).unwrap())) % 26;
+            let new_char_index = (char_to_pos(cipher_char) + 26 - char_to_pos(k.chars().nth(key_iteration).unwrap())) % 26;
             let key_length = k.chars().count() - 1;
             if key_iteration == key_length { 
                 key_iteration -= key_length; 
