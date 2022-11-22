@@ -57,20 +57,27 @@ fn main() {
     
 }
 
-const ALPHABET: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string();
+const ALPHABET: &str = "abcdefghijklmnopqrstuvwxyz";
 
 fn char_to_pos(input: char) -> usize {
+    println!("char {} to pos: {:?}", input, ALPHABET.chars().position(|c| input == c));
     ALPHABET.chars().position(|c| input == c).unwrap()
 }
 
 
 fn encode_vignere(m: String, k: String) -> String {
     let mut result: String = "".to_string();
+    let mut key_iteration: usize = 0;
     for message_char in m.chars() {
-        for key_char in k.chars() {
-            let new_char_index = char_to_pos(message_char) + char_to_pos(key_char);
+        if message_char == ' ' {
+            result.push(' ');
+        } else {
+            let new_char_index = (char_to_pos(message_char) + char_to_pos(k.chars().nth(key_iteration).unwrap())) % 26;
+            if key_iteration == k.chars().count() - 1 { key_iteration = 0} else { key_iteration += 1 }
+            println!("new_char_index: {:?}", new_char_index);
             let new_char = ALPHABET.chars().nth(new_char_index).unwrap();
             result.push(new_char);
+            println!("results: {}", result)
         }
     }
     result
