@@ -1,5 +1,4 @@
 use std::io;
-
 use console::Term;
 use dialoguer::{theme::ColorfulTheme, Select};
 
@@ -53,8 +52,9 @@ fn char_to_pos(input: char) -> usize {
     ALPHABET.chars().position(|c| input == c).unwrap()
 }
 
-fn encode_vignere(m: String, mut k: String) -> String {
-    k = k.trim().to_string();
+fn encode_vignere(message: String, mut key: String) -> String {
+    let k = key.trim().to_string().to_lowercase();
+    let m = message.to_lowercase();
     let mut result: String = "".to_string();
     let mut key_iteration: usize = 0;
     for message_char in m.chars() {
@@ -79,8 +79,9 @@ fn encode_vignere(m: String, mut k: String) -> String {
     result
 }
 
-fn decode_vignere(c: String, mut k: String) -> String {
-    k = k.trim().to_string();
+fn decode_vignere(ciphertext: String, key: String) -> String {
+    let k = key.trim().to_string().to_lowercase();
+    let c = ciphertext.to_lowercase();
     let mut result: String = "".to_string();
     let mut key_iteration: usize = 0;
     for cipher_char in c.chars() {
