@@ -1,31 +1,26 @@
 use std::io;
 
-use dialoguer::{
-    Select,
-    theme::ColorfulTheme
-};
 use console::Term;
+use dialoguer::{theme::ColorfulTheme, Select};
 
 fn main() {
-
     println!("Please choose from the following menu.");
     let selected = select_screen();
     let mut key = String::new();
-    
+
     match selected {
         Ok(val) => {
             if val == "Encode" {
                 let mut message = String::new();
                 println!("Please input your message.");
                 io::stdin()
-                .read_line(&mut message)
-                .expect("Failed to read line");
-                
-                
+                    .read_line(&mut message)
+                    .expect("Failed to read line");
+
                 println!("Please input your secret encoding key.");
                 io::stdin()
-                .read_line(&mut key)
-                .expect("Failed to read line");
+                    .read_line(&mut key)
+                    .expect("Failed to read line");
 
                 let res = encode_vignere(message, key);
                 println!("your ciphertext ser: {}", res);
@@ -33,28 +28,23 @@ fn main() {
                 let mut ciphertext = String::new();
                 println!("Please input your ciphertext.");
                 io::stdin()
-                .read_line(&mut ciphertext)
-                .expect("Failed to read line");
-                
-                
+                    .read_line(&mut ciphertext)
+                    .expect("Failed to read line");
+
                 println!("Please input the secret decoding key.");
                 io::stdin()
-                .read_line(&mut key)
-                .expect("Failed to read line");
-                
+                    .read_line(&mut key)
+                    .expect("Failed to read line");
+
                 let res = decode_vignere(ciphertext, key);
                 println!("your message ser: {}", res);
             }
-        },
+        }
         Err(err) => {
             // Do something with the error if you want
             println!("Error: {}", err);
         }
     }
-
-    
-
-    
 }
 
 const ALPHABET: &str = "abcdefghijklmnopqrstuvwxyz";
@@ -63,7 +53,6 @@ fn char_to_pos(input: char) -> usize {
     ALPHABET.chars().position(|c| input == c).unwrap()
 }
 
-
 fn encode_vignere(m: String, mut k: String) -> String {
     k = k.trim().to_string();
     let mut result: String = "".to_string();
@@ -71,16 +60,17 @@ fn encode_vignere(m: String, mut k: String) -> String {
     for message_char in m.chars() {
         if message_char == ' ' {
             result.push(' ');
-        } else if message_char == '\n'{
-            return result
+        } else if message_char == '\n' {
+            return result;
         } else {
-            let new_char_index = (char_to_pos(message_char) + char_to_pos(k.chars().nth(key_iteration).unwrap())) % 26;
+            let new_char_index = (char_to_pos(message_char)
+                + char_to_pos(k.chars().nth(key_iteration).unwrap()))
+                % 26;
             let key_length = k.chars().count() - 1;
-            if key_iteration == key_length { 
-                key_iteration -= key_length; 
-            } 
-            else { 
-                key_iteration += 1; 
+            if key_iteration == key_length {
+                key_iteration -= key_length;
+            } else {
+                key_iteration += 1;
             }
             let new_char = ALPHABET.chars().nth(new_char_index).unwrap();
             result.push(new_char);
@@ -96,16 +86,17 @@ fn decode_vignere(c: String, mut k: String) -> String {
     for cipher_char in c.chars() {
         if cipher_char == ' ' {
             result.push(' ');
-        } else if cipher_char == '\n'{
-            return result
+        } else if cipher_char == '\n' {
+            return result;
         } else {
-            let new_char_index = (char_to_pos(cipher_char) + 26 - char_to_pos(k.chars().nth(key_iteration).unwrap())) % 26;
+            let new_char_index = (char_to_pos(cipher_char) + 26
+                - char_to_pos(k.chars().nth(key_iteration).unwrap()))
+                % 26;
             let key_length = k.chars().count() - 1;
-            if key_iteration == key_length { 
-                key_iteration -= key_length; 
-            } 
-            else { 
-                key_iteration += 1; 
+            if key_iteration == key_length {
+                key_iteration -= key_length;
+            } else {
+                key_iteration += 1;
             }
             let new_char = ALPHABET.chars().nth(new_char_index).unwrap();
             result.push(new_char);
@@ -123,7 +114,6 @@ fn select_screen() -> std::io::Result<(String)> {
 
     match selection {
         Some(index) => Ok(items[index].to_string()),
-        None => Ok("".to_string())
+        None => Ok("".to_string()),
     }
-
 }
