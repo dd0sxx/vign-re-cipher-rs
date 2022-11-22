@@ -60,44 +60,57 @@ fn main() {
 const ALPHABET: &str = "abcdefghijklmnopqrstuvwxyz";
 
 fn char_to_pos(input: char) -> usize {
-    println!("char {} to pos: {:?}", input, ALPHABET.chars().position(|c| input == c));
     ALPHABET.chars().position(|c| input == c).unwrap()
 }
 
 
-fn encode_vignere(m: String, mut  k: String) -> String {
+fn encode_vignere(m: String, mut k: String) -> String {
     k = k.trim().to_string();
     let mut result: String = "".to_string();
     let mut key_iteration: usize = 0;
     for message_char in m.chars() {
         if message_char == ' ' {
             result.push(' ');
+        } else if message_char == '\n'{
+            return result
         } else {
-            println!("key iteration: {:?}, k.chars().count(): {}", key_iteration, k.chars().count());
             let new_char_index = (char_to_pos(message_char) + char_to_pos(k.chars().nth(key_iteration).unwrap())) % 26;
             let key_length = k.chars().count() - 1;
-            println!("key length {}", key_length);
             if key_iteration == key_length { 
-                println!("subtracting {}", key_length);
                 key_iteration -= key_length; 
             } 
             else { 
-                println!("adding 1");
                 key_iteration += 1; 
             }
-            println!("new key_iteration: {:?}", key_iteration);
-            println!("new_char_index: {:?}", new_char_index);
             let new_char = ALPHABET.chars().nth(new_char_index).unwrap();
             result.push(new_char);
-            println!("results: {}", result)
         }
     }
     result
 }
 
-fn decode_vignere(c: String, k: String) -> String {
+fn decode_vignere(c: String, mut k: String) -> String {
+    k = k.trim().to_string();
     let mut result: String = "".to_string();
-
+    let mut key_iteration: usize = 0;
+    for cipher_char in c.chars() {
+        if cipher_char == ' ' {
+            result.push(' ');
+        } else if cipher_char == '\n'{
+            return result
+        } else {
+            let new_char_index = (char_to_pos(cipher_char) + char_to_pos(k.chars().nth(key_iteration).unwrap())) % 26;
+            let key_length = k.chars().count() - 1;
+            if key_iteration == key_length { 
+                key_iteration -= key_length; 
+            } 
+            else { 
+                key_iteration += 1; 
+            }
+            let new_char = ALPHABET.chars().nth(new_char_index).unwrap();
+            result.push(new_char);
+        }
+    }
     result
 }
 
